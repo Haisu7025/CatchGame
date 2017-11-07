@@ -69,7 +69,7 @@ void Widget::gen_map(int row, int col){
                                   border-image: url(:/pics/button.png);         \
                                   border-width: 12px;                           \
                                   min-height: 50px;                             \
-                                  min-width: 56px;                              \
+                                  min-width: 55px;                              \
                                   border:2px groove gray;                       \
                                   border-radius:10px;                           \
                                   }                                             \

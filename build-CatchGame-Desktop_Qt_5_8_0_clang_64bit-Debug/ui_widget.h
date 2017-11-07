@@ -34,6 +34,7 @@ public:
     QPushButton *back_b;
     QWidget *gridLayoutWidget;
     QGridLayout *gl;
+    QPushButton *back_b_2;
     QWidget *page_3;
 
     void setupUi(QWidget *Widget)
@@ -150,12 +151,40 @@ public:
 "}"));
         gridLayoutWidget = new QWidget(page_2);
         gridLayoutWidget->setObjectName(QStringLiteral("gridLayoutWidget"));
-        gridLayoutWidget->setGeometry(QRect(50, 50, 301, 271));
+        gridLayoutWidget->setGeometry(QRect(50, 50, 321, 301));
         gl = new QGridLayout(gridLayoutWidget);
         gl->setSpacing(6);
         gl->setContentsMargins(11, 11, 11, 11);
         gl->setObjectName(QStringLiteral("gl"));
         gl->setContentsMargins(0, 0, 0, 0);
+        back_b_2 = new QPushButton(page_2);
+        back_b_2->setObjectName(QStringLiteral("back_b_2"));
+        back_b_2->setGeometry(QRect(80, 360, 151, 41));
+        back_b_2->setFont(font);
+        back_b_2->setStyleSheet(QLatin1String("QPushButton {\n"
+"color: white;\n"
+"border-image: url(:/pics/button.png);\n"
+"border-width: 12px;\n"
+"padding: -12px 0px;\n"
+"min-height: 25px;\n"
+"min-width: 60px;\n"
+"border:2px groove gray;\n"
+"border-radius:10px;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"color: lightgray;\n"
+"border-image: url(:/pics/button-pressed.png); \n"
+"padding-top: -10px;\n"
+"padding-bottom: -16px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"border-width: 12px;\n"
+"padding: -12px 0px;\n"
+"min-height: 25px;\n"
+"min-width: 60px;\n"
+"border:3px groove gray;\n"
+"border-radius:10px;\n"
+"}"));
         stackedWidget->addWidget(page_2);
         page_3 = new QWidget();
         page_3->setObjectName(QStringLiteral("page_3"));
@@ -163,7 +192,7 @@ public:
 
         retranslateUi(Widget);
 
-        stackedWidget->setCurrentIndex(1);
+        stackedWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(Widget);
@@ -176,6 +205,7 @@ public:
         start_b->setText(QApplication::translate("Widget", "START GAME", Q_NULLPTR));
         label->setText(QApplication::translate("Widget", "<html><head/><body><p align=\"center\"><span style=\" font-size:24pt; color:#ffffff;\">Catch Me if You Can</span></p><p align=\"center\"><span style=\" font-size:24pt; color:#ffffff;\">v0.1</span></p></body></html>", Q_NULLPTR));
         back_b->setText(QApplication::translate("Widget", "BACK", Q_NULLPTR));
+        back_b_2->setText(QApplication::translate("Widget", "RUN!", Q_NULLPTR));
     } // retranslateUi
 
 };

@@ -49,10 +49,12 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = ../CatchGame/main.cpp \
-		../CatchGame/widget.cpp qrc_res.cpp \
+		../CatchGame/widget.cpp \
+		../CatchGame/algthm.cpp qrc_res.cpp \
 		moc_widget.cpp
 OBJECTS       = main.o \
 		widget.o \
+		algthm.o \
 		qrc_res.o \
 		moc_widget.o
 DIST          = /Applications/QT5.8/5.8/clang_64/mkspecs/features/spec_pre.prf \
@@ -231,8 +233,10 @@ DIST          = /Applications/QT5.8/5.8/clang_64/mkspecs/features/spec_pre.prf \
 		/Applications/QT5.8/5.8/clang_64/mkspecs/features/exceptions.prf \
 		/Applications/QT5.8/5.8/clang_64/mkspecs/features/yacc.prf \
 		/Applications/QT5.8/5.8/clang_64/mkspecs/features/lex.prf \
-		../CatchGame/CatchGame.pro ../CatchGame/widget.h ../CatchGame/main.cpp \
-		../CatchGame/widget.cpp
+		../CatchGame/CatchGame.pro ../CatchGame/widget.h \
+		../CatchGame/algthm.h ../CatchGame/main.cpp \
+		../CatchGame/widget.cpp \
+		../CatchGame/algthm.cpp
 QMAKE_TARGET  = CatchGame
 DESTDIR       = 
 TARGET        = CatchGame.app/Contents/MacOS/CatchGame
@@ -639,8 +643,8 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../CatchGame/res.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /Applications/QT5.8/5.8/clang_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../CatchGame/widget.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../CatchGame/main.cpp ../CatchGame/widget.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../CatchGame/widget.h ../CatchGame/algthm.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../CatchGame/main.cpp ../CatchGame/widget.cpp ../CatchGame/algthm.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../CatchGame/widget.ui $(DISTDIR)/
 
 
@@ -690,6 +694,9 @@ moc_widget.cpp: /Applications/QT5.8/5.8/clang_64/lib/QtWidgets.framework/Headers
 		/Applications/QT5.8/5.8/clang_64/lib/QtWidgets.framework/Headers/qpushbutton.h \
 		/Applications/QT5.8/5.8/clang_64/lib/QtCore.framework/Headers/QPropertyAnimation \
 		/Applications/QT5.8/5.8/clang_64/lib/QtCore.framework/Headers/qpropertyanimation.h \
+		../CatchGame/algthm.h \
+		/Applications/QT5.8/5.8/clang_64/lib/QtGui.framework/Headers/QList \
+		/Applications/QT5.8/5.8/clang_64/lib/QtGui.framework/Headers/qevent.h \
 		../CatchGame/widget.h \
 		moc_predefs.h \
 		/Applications/QT5.8/5.8/clang_64/bin/moc
@@ -725,6 +732,9 @@ main.o: ../CatchGame/main.cpp ../CatchGame/widget.h \
 		/Applications/QT5.8/5.8/clang_64/lib/QtWidgets.framework/Headers/qpushbutton.h \
 		/Applications/QT5.8/5.8/clang_64/lib/QtCore.framework/Headers/QPropertyAnimation \
 		/Applications/QT5.8/5.8/clang_64/lib/QtCore.framework/Headers/qpropertyanimation.h \
+		../CatchGame/algthm.h \
+		/Applications/QT5.8/5.8/clang_64/lib/QtGui.framework/Headers/QList \
+		/Applications/QT5.8/5.8/clang_64/lib/QtGui.framework/Headers/qevent.h \
 		/Applications/QT5.8/5.8/clang_64/lib/QtWidgets.framework/Headers/QApplication \
 		/Applications/QT5.8/5.8/clang_64/lib/QtWidgets.framework/Headers/qapplication.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../CatchGame/main.cpp
@@ -738,12 +748,21 @@ widget.o: ../CatchGame/widget.cpp ../CatchGame/widget.h \
 		/Applications/QT5.8/5.8/clang_64/lib/QtWidgets.framework/Headers/qpushbutton.h \
 		/Applications/QT5.8/5.8/clang_64/lib/QtCore.framework/Headers/QPropertyAnimation \
 		/Applications/QT5.8/5.8/clang_64/lib/QtCore.framework/Headers/qpropertyanimation.h \
+		../CatchGame/algthm.h \
+		/Applications/QT5.8/5.8/clang_64/lib/QtGui.framework/Headers/QList \
+		/Applications/QT5.8/5.8/clang_64/lib/QtGui.framework/Headers/qevent.h \
 		ui_widget.h \
 		/Applications/QT5.8/5.8/clang_64/lib/QtGui.framework/Headers/QMouseEvent \
-		/Applications/QT5.8/5.8/clang_64/lib/QtGui.framework/Headers/qevent.h \
 		/Applications/QT5.8/5.8/clang_64/lib/QtCore.framework/Headers/QDebug \
 		/Applications/QT5.8/5.8/clang_64/lib/QtCore.framework/Headers/qdebug.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o widget.o ../CatchGame/widget.cpp
+
+algthm.o: ../CatchGame/algthm.cpp ../CatchGame/algthm.h \
+		/Applications/QT5.8/5.8/clang_64/lib/QtGui.framework/Headers/QList \
+		/Applications/QT5.8/5.8/clang_64/lib/QtGui.framework/Headers/qevent.h \
+		/Applications/QT5.8/5.8/clang_64/lib/QtCore.framework/Headers/QtMath \
+		/Applications/QT5.8/5.8/clang_64/lib/QtCore.framework/Headers/qmath.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o algthm.o ../CatchGame/algthm.cpp
 
 qrc_res.o: qrc_res.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_res.o qrc_res.cpp

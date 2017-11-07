@@ -35,7 +35,7 @@
     <enum>QFrame::Plain</enum>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="page">
     <widget class="QPushButton" name="quit_b">
@@ -203,11 +203,56 @@ border-radius:10px;
       <rect>
        <x>50</x>
        <y>50</y>
-       <width>301</width>
-       <height>271</height>
+       <width>321</width>
+       <height>301</height>
       </rect>
      </property>
      <layout class="QGridLayout" name="gl"/>
+    </widget>
+    <widget class="QPushButton" name="back_b_2">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>360</y>
+       <width>151</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Papyrus</family>
+       <italic>false</italic>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+color: white;
+border-image: url(:/pics/button.png);
+border-width: 12px;
+padding: -12px 0px;
+min-height: 25px;
+min-width: 60px;
+border:2px groove gray;
+border-radius:10px;
+}
+QPushButton:pressed {
+color: lightgray;
+border-image: url(:/pics/button-pressed.png); 
+padding-top: -10px;
+padding-bottom: -16px;
+}
+QPushButton:hover {
+border-width: 12px;
+padding: -12px 0px;
+min-height: 25px;
+min-width: 60px;
+border:3px groove gray;
+border-radius:10px;
+}</string>
+     </property>
+     <property name="text">
+      <string>RUN!</string>
+     </property>
     </widget>
    </widget>
    <widget class="QWidget" name="page_3"/>

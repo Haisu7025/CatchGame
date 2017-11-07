@@ -1,12 +1,11 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
-#define MAX_MAP_SIZE 10
-
 #include <QWidget>
 #include <QAbstractButton>
 #include <QPushButton>
 #include "QPropertyAnimation"
+#include "algthm.h"
 
 namespace Ui {
 class Widget;
