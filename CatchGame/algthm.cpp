@@ -56,6 +56,7 @@ Node* Algthm::getEle(int x, int y){
 void Algthm::AStarSearch(Node *s, Node *e){
     QList<Node*> *OpenLs = new QList<Node*>();
     QList<Node*> *ClosLs = new QList<Node*>();
+    QList<Node*> *Path = new QList<Node*>();
 
     OpenLs->append(s);
     while(1){
@@ -69,6 +70,20 @@ void Algthm::AStarSearch(Node *s, Node *e){
             }
         }
         AStarUnitSearch(OpenLs,ClosLs,tn,e);
+        if(tn==e){
+            break;
+        }
+    }
+    Node *temp;
+    temp=e;
+    while(1){
+        Path->push_front(temp);
+        if(temp->father!=s){
+            temp=temp->father;
+        }
+        else{
+            break;
+        }
     }
 }
 
@@ -85,21 +100,22 @@ void Algthm::AStarUnitSearch(QList<Node*> *OpenLs, QList<Node*> *ClosLs, Node *n
             if(abs(i-curx)+abs(j-cury)==2){
                 continue;
             }
-            if(i>=0 && i<=rangex && j>=0 && j<=rangey){
+            if(i>=0 && i<rangex && j>=0 && j<rangey){
                 //inside range
                 int t;
                 if(ClosLs->indexOf(nmap[i][j])>=0){
                     continue;
                 }
                 if(nmap[i][j]->getState()==FTG){
-                    nmap[i][j]->father=n;
                     nmap[i][j]->setGH(n->getG()+1,getMahattanDistance(i,j,tarx,tary));
                     if((t=OpenLs->indexOf(nmap[i][j]))>=0){
                         if(OpenLs->at(t)->getGH()>=nmap[i][j]->getGH()){
+                            nmap[i][j]->father=n;
                             OpenLs->replace(t,nmap[i][j]);
                         }
                     }
                     OpenLs->append(nmap[i][j]);
+                    nmap[i][j]->father=n;
                 }
             }
         }
