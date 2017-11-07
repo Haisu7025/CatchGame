@@ -2,4 +2,9 @@
     <qresource prefix="/new/prefix1">
         <file>timg.jpeg</file>
     </qresource>
+    <qresource prefix="/new/prefix2">
+        <file>mouse.png</file>
+        <file>cat.png</file>
+        <file>wall.png</file>
+    </qresource>
 </RCC>

@@ -7,7 +7,8 @@
 #include "QPropertyAnimation"
 #include "algthm.h"
 
-namespace Ui {
+namespace Ui
+{
 class Widget;
 }
 
@@ -15,7 +16,7 @@ class Widget : public QWidget
 {
     Q_OBJECT
 
-public:
+  public:
     explicit Widget(QWidget *parent = 0);
     ~Widget();
 
@@ -23,24 +24,33 @@ public:
     void bind_slots();
     void create_move_animation(QAbstractButton *obj, QPoint target);
 
-protected:
+  protected:
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
-private:
+
+  private:
     Ui::Widget *ui;
     bool mMoveing;
     QPoint mMovePosition;
     QPropertyAnimation *anim;
     QPushButton *button_group[MAX_MAP_SIZE][MAX_MAP_SIZE];
 
-    void gen_map(int row,int col);
+    // Game Set
+    int row, col;
+    int cmap[MAX_MAP_SIZE][MAX_MAP_SIZE];
+    bool cat_picked, mouse_picked;
+    bool mouse_move, cat_rush;
+
+    void gen_map(int row, int col);
     void shrink_out(QWidget *w);
     void shrink_in(QWidget *w);
     void shrink_out_and_quit(QWidget *w);
 
-private slots:
+  private slots:
     void start_slot();
+    void pick_map_slot();
+    void pick_icon_slot();
     void quit_slot();
     void back_slot();
 };
