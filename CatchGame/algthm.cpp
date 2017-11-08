@@ -68,7 +68,6 @@ void Algthm::AStarSearch(Node *s, Node *e)
 {
     QList<Node *> *OpenLs = new QList<Node *>();
     QList<Node *> *ClosLs = new QList<Node *>();
-    QList<Node *> *Path = new QList<Node *>();
 
     OpenLs->append(s);
     while (1)

@@ -35,6 +35,7 @@ private:
   QPoint mMovePosition;
   QPropertyAnimation *anim;
   QPushButton *button_group[MAX_MAP_SIZE][MAX_MAP_SIZE];
+  QPushButton *play_b_group[MAX_MAP_SIZE][MAX_MAP_SIZE];
 
   // Game Set
   int row, col;
@@ -50,6 +51,9 @@ private:
   void set_wall(int m, int n);
   void set_blank(int m, int n);
 
+  // Game Play
+  void gen_play_map();
+
   void shrink_out(QWidget *w);
   void shrink_in(QWidget *w);
   void shrink_out_and_quit(QWidget *w);
@@ -59,6 +63,11 @@ private slots:
   void pick_map_slot();
   void pick_icon_slot();
   void change_size_slot(int csize);
+
+  void play_slot();
+  void solve_slot();
+  void move_map_slot();
+  void back_gp_slot();
 
   void rand_slot();
   void quit_slot();

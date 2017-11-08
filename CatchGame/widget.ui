@@ -202,14 +202,14 @@ border-radius:10px;
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>30</y>
+       <y>20</y>
        <width>381</width>
-       <height>311</height>
+       <height>331</height>
       </rect>
      </property>
      <layout class="QGridLayout" name="gl">
       <property name="spacing">
-       <number>0</number>
+       <number>1</number>
       </property>
      </layout>
     </widget>
@@ -570,7 +570,209 @@ border-radius:10px;
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="gameplay"/>
+   <widget class="QWidget" name="gameplay">
+    <widget class="QWidget" name="gridLayoutWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>441</width>
+       <height>381</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gl_gp">
+      <property name="spacing">
+       <number>1</number>
+      </property>
+     </layout>
+    </widget>
+    <widget class="QPushButton" name="back_b_gp">
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>360</y>
+       <width>151</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Papyrus</family>
+       <italic>false</italic>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+color: white;
+border-image: url(:/pics/button.png);
+border-width: 12px;
+padding: -12px 0px;
+min-height: 25px;
+min-width: 60px;
+border:2px groove gray;
+border-radius:10px;
+}
+QPushButton:pressed {
+color: lightgray;
+border-image: url(:/pics/button-pressed.png); 
+padding-top: -10px;
+padding-bottom: -16px;
+}
+QPushButton:hover {
+border-width: 12px;
+padding: -12px 0px;
+min-height: 25px;
+min-width: 60px;
+border:3px groove gray;
+border-radius:10px;
+}</string>
+     </property>
+     <property name="text">
+      <string>BACK</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="solve_b">
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>290</y>
+       <width>151</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Papyrus</family>
+       <italic>false</italic>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+color: white;
+border-image: url(:/pics/button.png);
+border-width: 12px;
+padding: -12px 0px;
+min-height: 25px;
+min-width: 60px;
+border:2px groove gray;
+border-radius:10px;
+}
+QPushButton:pressed {
+color: lightgray;
+border-image: url(:/pics/button-pressed.png); 
+padding-top: -10px;
+padding-bottom: -16px;
+}
+QPushButton:hover {
+border-width: 12px;
+padding: -12px 0px;
+min-height: 25px;
+min-width: 60px;
+border:3px groove gray;
+border-radius:10px;
+}</string>
+     </property>
+     <property name="text">
+      <string>SOLVE</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>470</x>
+       <y>60</y>
+       <width>151</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Papyrus</family>
+      </font>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#fefefe;&quot;&gt;CURRENT MOVE:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_5">
+     <property name="geometry">
+      <rect>
+       <x>470</x>
+       <y>120</y>
+       <width>151</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Papyrus</family>
+      </font>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#fefefe;&quot;&gt;REQUIRED MOVE:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="cur_move_l">
+     <property name="geometry">
+      <rect>
+       <x>620</x>
+       <y>60</y>
+       <width>51</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Papyrus</family>
+      </font>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="req_move_l">
+     <property name="geometry">
+      <rect>
+       <x>620</x>
+       <y>120</y>
+       <width>51</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Papyrus</family>
+      </font>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+   </widget>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

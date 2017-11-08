@@ -38,9 +38,15 @@ void Widget::init_widget_look()
 void Widget::bind_slots()
 {
     connect(ui->start_b, SIGNAL(clicked(bool)), this, SLOT(start_slot()));
-    connect(ui->rand_b,SIGNAL(clicked(bool)),this,SLOT(rand_slot()));
     connect(ui->quit_b, SIGNAL(clicked(bool)), this, SLOT(quit_slot()));
+
+    connect(ui->rand_b,SIGNAL(clicked(bool)),this,SLOT(rand_slot()));
     connect(ui->back_b, SIGNAL(clicked(bool)), this, SLOT(back_slot()));
+
+    connect(ui->run_b,SIGNAL(clicked(bool)),this,SLOT(play_slot()));
+    connect(ui->solve_b,SIGNAL(clicked(bool)),this,SLOT(solve_slot()));
+    connect(ui->back_b_gp,SIGNAL(clicked(bool)),this,SLOT(back_gp_slot()));
+
 }
 
 void Widget::create_move_animation(QAbstractButton *obj, QPoint target)
@@ -75,7 +81,7 @@ void Widget::gen_map(int row, int col)
     this->row=row;
     this->col=col;
     QFont font;
-    int sizex = 225/row, sizey = 290/col;
+    int sizex = 280/row, sizey = 225/col;
     font.setFamily("Papyrus");  
     for (int i = 0; i < row; i++)
     {
@@ -89,8 +95,8 @@ void Widget::gen_map(int row, int col)
                                   color: white;                                 \
                                   border-image: url(:/pics/button.png);         \
                                   border-width: 12px;                           \
-                                  min-height: "+QString::number(sizey)+"px;                             \
-                                  min-width: "+QString::number(sizex)+"px;                              \
+                                  min-height: "+QString::number(sizex)+"px;                             \
+                                  min-width: "+QString::number(sizey)+"px;                              \
                                   border:2px groove gray;                       \
                                   border-radius:10px;                           \
                                   }                                             \
@@ -155,6 +161,55 @@ void Widget::set_wall(int m, int n){
 void Widget::set_blank(int m, int n){
     button_group[m][n]->setIcon(QIcon());
     cmap[m][n]=0;
+}
+
+void Widget::gen_play_map(){
+    int sizex = 300/row, sizey = 250/col;
+    for (int i = 0; i < row; i++)
+    {
+        for (int j = 0; j < col; j++)
+        {
+            play_b_group[i][j] = new QPushButton();
+            play_b_group[i][j]->setParent(ui->gameset);
+            play_b_group[i][j]->setObjectName(QString::number(i*100+j));
+            play_b_group[i][j]->setStyleSheet("QPushButton {                    \
+                                  color: white;                                 \
+                                  border-image: url(:/pics/button.png);         \
+                                  border-width: 12px;                           \
+                                  min-height: "+QString::number(sizex)+"px;                             \
+                                  min-width: "+QString::number(sizey)+"px;                              \
+                                  border:2px groove gray;                       \
+                                  border-radius:10px;                           \
+                                  }                                             \
+                                  QPushButton:pressed {                         \
+                                  color: lightgray;                             \
+                                  border-image: url(:/pics/button-pressed.png); \
+                                  padding-top: -10px;                           \
+                                  padding-bottom: -16px;                        \
+                                  }                                             \
+                                  QPushButton:hover {                           \
+                                  border-width: 12px;                           \
+                                  padding: -12px 0px;                           \
+                                  min-height: 25px;                             \
+                                  min-width: 60px;                              \
+                                  border:3px groove gray;                       \
+                                  border-radius:10px;                           \
+                                  }");
+            ui->gl_gp->addWidget(play_b_group[i][j], i, j);
+            switch (cmap[i][j]) {
+            case 1:
+                play_b_group[i][j]->setIcon(QIcon(QPixmap(":/new/prefix2/wall1.png")));
+                break;
+            case 2:
+                play_b_group[i][j]->setIcon(QIcon(QPixmap(":/new/prefix2/mouse.png")));
+                break;
+            case 3:
+                play_b_group[i][j]->setIcon(QIcon(QPixmap(":/new/prefix2/cat.png")));
+            default:
+                break;
+            }
+        }
+    }
 }
 
 void Widget::pick_map_slot(){
@@ -259,6 +314,30 @@ void Widget::rand_slot(){
             }
         }
     }
+}
+
+void Widget::play_slot(){
+    ui->stackedWidget->setCurrentIndex(2);
+    gen_play_map();
+    Algthm *al = new Algthm(row,col);
+
+}
+
+void Widget::solve_slot(){
+
+}
+
+void Widget::move_map_slot(){
+
+}
+
+void Widget::back_gp_slot(){
+    for(int i=0;i<row;i++){
+        for(int j=0;j<col;j++){
+            play_b_group[i][j]->deleteLater();
+        }
+    }
+    ui->stackedWidget->setCurrentIndex(ui->stackedWidget->currentIndex() - 1);
 }
 
 void Widget::quit_slot()

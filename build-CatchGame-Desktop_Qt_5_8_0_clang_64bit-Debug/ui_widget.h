@@ -50,6 +50,14 @@ public:
     QCheckBox *catrush;
     QLabel *label_3;
     QWidget *gameplay;
+    QWidget *gridLayoutWidget_2;
+    QGridLayout *gl_gp;
+    QPushButton *back_b_gp;
+    QPushButton *solve_b;
+    QLabel *label_4;
+    QLabel *label_5;
+    QLabel *cur_move_l;
+    QLabel *req_move_l;
 
     void setupUi(QWidget *Widget)
     {
@@ -165,9 +173,9 @@ public:
 "}"));
         gridLayoutWidget = new QWidget(gameset);
         gridLayoutWidget->setObjectName(QStringLiteral("gridLayoutWidget"));
-        gridLayoutWidget->setGeometry(QRect(60, 30, 381, 311));
+        gridLayoutWidget->setGeometry(QRect(60, 20, 381, 331));
         gl = new QGridLayout(gridLayoutWidget);
-        gl->setSpacing(0);
+        gl->setSpacing(1);
         gl->setContentsMargins(11, 11, 11, 11);
         gl->setObjectName(QStringLiteral("gl"));
         gl->setContentsMargins(0, 0, 0, 0);
@@ -352,6 +360,94 @@ public:
         stackedWidget->addWidget(gameset);
         gameplay = new QWidget();
         gameplay->setObjectName(QStringLiteral("gameplay"));
+        gridLayoutWidget_2 = new QWidget(gameplay);
+        gridLayoutWidget_2->setObjectName(QStringLiteral("gridLayoutWidget_2"));
+        gridLayoutWidget_2->setGeometry(QRect(20, 20, 441, 381));
+        gl_gp = new QGridLayout(gridLayoutWidget_2);
+        gl_gp->setSpacing(1);
+        gl_gp->setContentsMargins(11, 11, 11, 11);
+        gl_gp->setObjectName(QStringLiteral("gl_gp"));
+        gl_gp->setContentsMargins(0, 0, 0, 0);
+        back_b_gp = new QPushButton(gameplay);
+        back_b_gp->setObjectName(QStringLiteral("back_b_gp"));
+        back_b_gp->setGeometry(QRect(480, 360, 151, 41));
+        back_b_gp->setFont(font);
+        back_b_gp->setStyleSheet(QLatin1String("QPushButton {\n"
+"color: white;\n"
+"border-image: url(:/pics/button.png);\n"
+"border-width: 12px;\n"
+"padding: -12px 0px;\n"
+"min-height: 25px;\n"
+"min-width: 60px;\n"
+"border:2px groove gray;\n"
+"border-radius:10px;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"color: lightgray;\n"
+"border-image: url(:/pics/button-pressed.png); \n"
+"padding-top: -10px;\n"
+"padding-bottom: -16px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"border-width: 12px;\n"
+"padding: -12px 0px;\n"
+"min-height: 25px;\n"
+"min-width: 60px;\n"
+"border:3px groove gray;\n"
+"border-radius:10px;\n"
+"}"));
+        solve_b = new QPushButton(gameplay);
+        solve_b->setObjectName(QStringLiteral("solve_b"));
+        solve_b->setGeometry(QRect(480, 290, 151, 41));
+        solve_b->setFont(font);
+        solve_b->setStyleSheet(QLatin1String("QPushButton {\n"
+"color: white;\n"
+"border-image: url(:/pics/button.png);\n"
+"border-width: 12px;\n"
+"padding: -12px 0px;\n"
+"min-height: 25px;\n"
+"min-width: 60px;\n"
+"border:2px groove gray;\n"
+"border-radius:10px;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"color: lightgray;\n"
+"border-image: url(:/pics/button-pressed.png); \n"
+"padding-top: -10px;\n"
+"padding-bottom: -16px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"border-width: 12px;\n"
+"padding: -12px 0px;\n"
+"min-height: 25px;\n"
+"min-width: 60px;\n"
+"border:3px groove gray;\n"
+"border-radius:10px;\n"
+"}"));
+        label_4 = new QLabel(gameplay);
+        label_4->setObjectName(QStringLiteral("label_4"));
+        label_4->setGeometry(QRect(470, 60, 151, 41));
+        label_4->setFont(font1);
+        label_4->setFrameShape(QFrame::NoFrame);
+        label_4->setFrameShadow(QFrame::Plain);
+        label_5 = new QLabel(gameplay);
+        label_5->setObjectName(QStringLiteral("label_5"));
+        label_5->setGeometry(QRect(470, 120, 151, 41));
+        label_5->setFont(font1);
+        label_5->setFrameShape(QFrame::NoFrame);
+        label_5->setFrameShadow(QFrame::Plain);
+        cur_move_l = new QLabel(gameplay);
+        cur_move_l->setObjectName(QStringLiteral("cur_move_l"));
+        cur_move_l->setGeometry(QRect(620, 60, 51, 41));
+        cur_move_l->setFont(font1);
+        cur_move_l->setFrameShape(QFrame::NoFrame);
+        cur_move_l->setFrameShadow(QFrame::Plain);
+        req_move_l = new QLabel(gameplay);
+        req_move_l->setObjectName(QStringLiteral("req_move_l"));
+        req_move_l->setGeometry(QRect(620, 120, 51, 41));
+        req_move_l->setFont(font1);
+        req_move_l->setFrameShape(QFrame::NoFrame);
+        req_move_l->setFrameShadow(QFrame::Plain);
         stackedWidget->addWidget(gameplay);
 
         retranslateUi(Widget);
@@ -378,6 +474,12 @@ public:
         label_2->setText(QApplication::translate("Widget", "<html><head/><body><p align=\"center\"><span style=\" color:#fefefe;\">Mouse Move ?</span></p></body></html>", Q_NULLPTR));
         catrush->setText(QString());
         label_3->setText(QApplication::translate("Widget", "<html><head/><body><p align=\"center\"><span style=\" color:#fefefe;\">Cat Rush ?</span></p></body></html>", Q_NULLPTR));
+        back_b_gp->setText(QApplication::translate("Widget", "BACK", Q_NULLPTR));
+        solve_b->setText(QApplication::translate("Widget", "SOLVE", Q_NULLPTR));
+        label_4->setText(QApplication::translate("Widget", "<html><head/><body><p align=\"center\"><span style=\" color:#fefefe;\">CURRENT MOVE:</span></p></body></html>", Q_NULLPTR));
+        label_5->setText(QApplication::translate("Widget", "<html><head/><body><p align=\"center\"><span style=\" color:#fefefe;\">REQUIRED MOVE:</span></p></body></html>", Q_NULLPTR));
+        cur_move_l->setText(QApplication::translate("Widget", "<html><head/><body><p align=\"center\"><br/></p></body></html>", Q_NULLPTR));
+        req_move_l->setText(QApplication::translate("Widget", "<html><head/><body><p align=\"center\"><br/></p></body></html>", Q_NULLPTR));
     } // retranslateUi
 
 };

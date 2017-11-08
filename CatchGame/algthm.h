@@ -38,7 +38,7 @@ class Algthm
 
   private:
     Node *nmap[MAX_MAP_SIZE][MAX_MAP_SIZE];
-    QList<Node *> *path;
+    QList<Node *> *Path;
     int rangex, rangey;
 
     int getMahattanDistance(int curx, int cury, int targetx, int targety);
