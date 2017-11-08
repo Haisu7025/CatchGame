@@ -6,5 +6,6 @@
         <file>mouse.png</file>
         <file>cat.png</file>
         <file>wall.png</file>
+        <file>wall1.png</file>
     </qresource>
 </RCC>

@@ -675,6 +675,7 @@ compiler_rcc_clean:
 qrc_res.cpp: ../CatchGame/res.qrc \
 		/Applications/QT5.8/5.8/clang_64/bin/rcc \
 		../CatchGame/cat.png \
+		../CatchGame/wall1.png \
 		../CatchGame/wall.png \
 		../CatchGame/mouse.png \
 		../CatchGame/timg.jpeg
@@ -758,6 +759,8 @@ widget.o: ../CatchGame/widget.cpp ../CatchGame/widget.h \
 		/Applications/QT5.8/5.8/clang_64/lib/QtGui.framework/Headers/qevent.h \
 		ui_widget.h \
 		/Applications/QT5.8/5.8/clang_64/lib/QtGui.framework/Headers/QMouseEvent \
+		/Applications/QT5.8/5.8/clang_64/lib/QtCore.framework/Headers/QTime \
+		/Applications/QT5.8/5.8/clang_64/lib/QtCore.framework/Headers/qdatetime.h \
 		/Applications/QT5.8/5.8/clang_64/lib/QtCore.framework/Headers/QDebug \
 		/Applications/QT5.8/5.8/clang_64/lib/QtCore.framework/Headers/qdebug.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o widget.o ../CatchGame/widget.cpp
