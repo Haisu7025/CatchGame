@@ -4,10 +4,10 @@
 
 #define MAX_MAP_SIZE 30
 
-#define FTG 10000
-#define BLOCK 10001
-#define MOUSE 10002
-#define CAT 10003
+#define FTG 0
+#define BLOCK 1
+#define MOUSE 2
+#define CAT 3
 class Node
 {
   public:
@@ -35,6 +35,12 @@ class Algthm
     Node *getEle(int x, int y);
     void AStarSearch(Node *s, Node *e);
     void AStarUnitSearch(QList<Node *> *OpenLs, QList<Node *> *CloseLs, Node *n, Node *target);
+
+    QList<Node*> get_path(){
+        return *Path;
+    }
+
+
 
   private:
     Node *nmap[MAX_MAP_SIZE][MAX_MAP_SIZE];

@@ -2,6 +2,7 @@
 #include "ui_widget.h"
 #include "QMouseEvent"
 #include "QTime"
+#include "QMessageBox"
 
 #define DEBUG 1
 
@@ -32,7 +33,6 @@ void Widget::init_widget_look()
     this->setPalette(palette);
     ui->stackedWidget->setCurrentIndex(0);
 
-    gen_map(5,5);
 }
 
 void Widget::bind_slots()
@@ -66,6 +66,7 @@ Widget::~Widget()
 void Widget::start_slot()
 {
     ui->stackedWidget->setCurrentIndex(1);
+    gen_map(5,5);
 
     connect(ui->cat_b,SIGNAL(clicked(bool)),this,SLOT(pick_icon_slot()));
     connect(ui->mouse_b,SIGNAL(clicked(bool)),this,SLOT(pick_icon_slot()));
@@ -74,6 +75,28 @@ void Widget::start_slot()
     connect(ui->col_set,SIGNAL(valueChanged(int)),this,SLOT(change_size_slot(int)));
     connect(ui->row_set,SIGNAL(valueChanged(int)),this,SLOT(change_size_slot(int)));
 
+}
+
+void Widget::reset_game(){
+    for(int i=0;i<row;i++){
+        for(int j=0;j<col;j++){
+            cmap[i][j]=0;
+            cgmap[i][j]=0;
+            button_group[i][j]->deleteLater();
+            play_b_group[i][j]->deleteLater();
+        }
+    }
+    Path.clear();
+    cat_pos[0]=cat_pos[1]=mouse_pos[0]=mouse_pos[1]=0;
+    row=0;col=0;
+
+    disconnect(ui->col_set,SIGNAL(valueChanged(int)),this,SLOT(change_size_slot(int)));
+    disconnect(ui->row_set,SIGNAL(valueChanged(int)),this,SLOT(change_size_slot(int)));
+    ui->row_set->setValue(5);
+    ui->col_set->setValue(5);
+
+    ui->mousemove->setChecked(false);
+    ui->catrush->setChecked(false);
 }
 
 void Widget::gen_map(int row, int col)
@@ -146,11 +169,15 @@ void Widget::rand_gen_cmap(){
 void Widget::set_cat(int m, int n){
     button_group[m][n]->setIcon(QIcon(QPixmap(":/new/prefix2/cat.png")));
     cmap[m][n]=3;
+    cat_pos[0]=m;
+    cat_pos[1]=n;
 }
 
 void Widget::set_mouse(int m, int n){
     button_group[m][n]->setIcon(QIcon(QPixmap(":/new/prefix2/mouse.png")));
     cmap[m][n]=2;
+    mouse_pos[0]=m;
+    mouse_pos[1]=n;
 }
 
 void Widget::set_wall(int m, int n){
@@ -302,13 +329,13 @@ void Widget::rand_slot(){
         {
             switch (cmap[i][j]) {
             case 1:
-                button_group[i][j]->setIcon(QIcon(QPixmap(":/new/prefix2/wall1.png")));
+                set_wall(i,j);
                 break;
             case 2:
-                button_group[i][j]->setIcon(QIcon(QPixmap(":/new/prefix2/mouse.png")));
+                set_mouse(i,j);
                 break;
             case 3:
-                button_group[i][j]->setIcon(QIcon(QPixmap(":/new/prefix2/cat.png")));
+                set_cat(i,j);
             default:
                 break;
             }
@@ -319,12 +346,46 @@ void Widget::rand_slot(){
 void Widget::play_slot(){
     ui->stackedWidget->setCurrentIndex(2);
     gen_play_map();
-    Algthm *al = new Algthm(row,col);
+    for(int i=0;i<row;i++){
+        for(int j=0;j<col;j++){
+            cgmap[i][j]=cmap[i][j];
+        }
+    }
+    Algthm *al = new Algthm(row,col,cmap);
 
+    al->AStarSearch(al->getEle(cat_pos[0],cat_pos[1]),al->getEle(mouse_pos[0],mouse_pos[1]));
+    Path = al->get_path();
+    ui->req_move_l->setText("<html><head/><body><p align=\"center\"><span style=\" color:#fefefe;\">"+QString::number(Path.length()+row*col/15)+"</span></p></body></html>");
+    ui->req_move_l->setText(QString::number(cur_move));
+
+    cur_cat_pos[0]=cat_pos[0];
+    cur_cat_pos[1]=cat_pos[1];
+
+    cur_mouse_pos[0]=mouse_pos[0];
+    cur_mouse_pos[1]=mouse_pos[1];
 }
 
 void Widget::solve_slot(){
-
+    if(cur_move!=0){
+        // Alredy move
+        QMessageBox::information(NULL, "ERROR", "Already Move Cat!", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+    }
+    else{
+        for(int i=0;i<Path.length();i++){
+            int m=cur_cat_pos[0],n=cur_cat_pos[1];
+            play_b_group[cur_cat_pos[0]][cur_cat_pos[1]]->setIcon(QIcon());
+            cur_cat_pos[0]=Path.at(i)->getX();
+            cur_cat_pos[1]=Path.at(i)->getY();
+            play_b_group[cur_cat_pos[0]][cur_cat_pos[1]]->setIcon(QIcon(QPixmap(":/new/prefix2/cat.png")));
+            QTime t;
+            t.start();
+            while(t.elapsed()<300)
+                QCoreApplication::processEvents();
+        }
+        QMessageBox::information(NULL,"End","Problem Solved!",QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+        reset_game();
+        ui->stackedWidget->setCurrentIndex(0);
+    }
 }
 
 void Widget::move_map_slot(){
@@ -337,7 +398,7 @@ void Widget::back_gp_slot(){
             play_b_group[i][j]->deleteLater();
         }
     }
-    ui->stackedWidget->setCurrentIndex(ui->stackedWidget->currentIndex() - 1);
+    ui->stackedWidget->setCurrentIndex(ui->stackedWidget->currentIndex() - 2);
 }
 
 void Widget::quit_slot()

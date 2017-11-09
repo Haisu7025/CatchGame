@@ -49,7 +49,7 @@ Algthm::Algthm(int x, int y, int array[MAX_MAP_SIZE][MAX_MAP_SIZE])
     {
         for (int j = 0; j < rangey; j++)
         {
-            nmap[i][j] = new Node(i, j, array[i][j] + 10000);
+            nmap[i][j] = new Node(i, j, array[i][j]);
         }
     }
 }
@@ -68,7 +68,7 @@ void Algthm::AStarSearch(Node *s, Node *e)
 {
     QList<Node *> *OpenLs = new QList<Node *>();
     QList<Node *> *ClosLs = new QList<Node *>();
-
+    Path = new QList<Node *>();
     OpenLs->append(s);
     while (1)
     {
@@ -89,14 +89,14 @@ void Algthm::AStarSearch(Node *s, Node *e)
             break;
         }
     }
-    Node *temp;
-    temp = e;
+    Node *temp = e;
+    Path->append(temp);
     while (1)
     {
-        Path->push_front(temp);
         if (temp->father != s)
         {
             temp = temp->father;
+            Path->push_front(temp);
         }
         else
         {
@@ -131,7 +131,7 @@ void Algthm::AStarUnitSearch(QList<Node *> *OpenLs, QList<Node *> *ClosLs, Node 
                 {
                     continue;
                 }
-                if (nmap[i][j]->getState() == FTG)
+                if (nmap[i][j]->getState() == FTG || nmap[i][j]->getState() == MOUSE)
                 {
                     nmap[i][j]->setGH(n->getG() + 1, getMahattanDistance(i, j, tarx, tary));
                     if ((t = OpenLs->indexOf(nmap[i][j])) >= 0)
@@ -141,9 +141,14 @@ void Algthm::AStarUnitSearch(QList<Node *> *OpenLs, QList<Node *> *ClosLs, Node 
                             nmap[i][j]->father = n;
                             OpenLs->replace(t, nmap[i][j]);
                         }
+                        else{
+                            continue;
+                        }
                     }
-                    OpenLs->append(nmap[i][j]);
-                    nmap[i][j]->father = n;
+                    else{
+                        OpenLs->append(nmap[i][j]);
+                        nmap[i][j]->father = n;
+                    }
                 }
             }
         }
