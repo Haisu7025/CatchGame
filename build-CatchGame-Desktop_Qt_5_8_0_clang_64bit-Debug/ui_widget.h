@@ -452,7 +452,7 @@ public:
 
         retranslateUi(Widget);
 
-        stackedWidget->setCurrentIndex(2);
+        stackedWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(Widget);
@@ -463,7 +463,7 @@ public:
         Widget->setWindowTitle(QApplication::translate("Widget", "Widget", Q_NULLPTR));
         quit_b->setText(QApplication::translate("Widget", "QUIT", Q_NULLPTR));
         start_b->setText(QApplication::translate("Widget", "START GAME", Q_NULLPTR));
-        label->setText(QApplication::translate("Widget", "<html><head/><body><p align=\"center\"><span style=\" font-size:24pt; color:#ffffff;\">Catch Me if You Can</span></p><p align=\"center\"><span style=\" font-size:24pt; color:#ffffff;\">v0.1</span></p></body></html>", Q_NULLPTR));
+        label->setText(QApplication::translate("Widget", "<html><head/><body><p align=\"center\"><span style=\" font-size:24pt; color:#ffffff;\">Catch Me if You Can</span></p><p align=\"center\"><span style=\" font-size:24pt; color:#ffffff;\">v0.5</span></p></body></html>", Q_NULLPTR));
         back_b->setText(QApplication::translate("Widget", "BACK", Q_NULLPTR));
         run_b->setText(QApplication::translate("Widget", "RUN!", Q_NULLPTR));
         rand_b->setText(QApplication::translate("Widget", "RANDOM", Q_NULLPTR));

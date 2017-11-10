@@ -7,5 +7,10 @@
         <file>cat.png</file>
         <file>wall.png</file>
         <file>wall1.png</file>
+        <file>point.png</file>
+        <file>down.png</file>
+        <file>left.png</file>
+        <file>right.png</file>
+        <file>up.png</file>
     </qresource>
 </RCC>

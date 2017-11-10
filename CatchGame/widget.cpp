@@ -197,7 +197,7 @@ void Widget::gen_play_map(){
         for (int j = 0; j < col; j++)
         {
             play_b_group[i][j] = new QPushButton();
-            play_b_group[i][j]->setParent(ui->gameset);
+            play_b_group[i][j]->setParent(ui->gameplay);
             play_b_group[i][j]->setObjectName(QString::number(i*100+j));
             play_b_group[i][j]->setStyleSheet("QPushButton {                    \
                                   color: white;                                 \
@@ -222,6 +222,7 @@ void Widget::gen_play_map(){
                                   border:3px groove gray;                       \
                                   border-radius:10px;                           \
                                   }");
+            connect(play_b_group[i][j],SIGNAL(clicked(bool)),this,SLOT(move_map_slot()));
             ui->gl_gp->addWidget(play_b_group[i][j], i, j);
             switch (cmap[i][j]) {
             case 1:
@@ -389,6 +390,53 @@ void Widget::solve_slot(){
 }
 
 void Widget::move_map_slot(){
+    int p = QObject::sender()->objectName().toInt();
+    int curx = p/100, cury = p%100;
+    if(cgmap[curx][cury]==CAT){
+        for(int i=0;i<row;i++){
+            for(int j=0;j<col;j++){
+                if(abs(i-curx)+abs(j-cury)==1 && cgmap[i][j]==FTG){
+                    if(i-curx==1){
+                        //up
+                        play_b_group[i][j]->setIcon(QIcon(QPixmap(":/new/prefix2/up.png")));
+                    }
+                    if(curx-i==1){
+                        //down
+                        play_b_group[i][j]->setIcon(QIcon(QPixmap(":/new/prefix2/down.png")));
+                    }
+                    if(j-cury==1){
+                        //right
+                        play_b_group[i][j]->setIcon(QIcon(QPixmap(":/new/prefix2/right.png")));
+                    }
+                    if(cury-j==1){
+                        //left
+                        play_b_group[i][j]->setIcon(QIcon(QPixmap(":/new/prefix2/left.png"));
+                    }
+                    cgmap[i][j]=-1;
+                    continue;
+                }
+                play_b_group[i][j]->setEnabled(false);
+            }
+        }
+    }
+    else if(cgmap[curx][cury]==-1){
+        cgmap[cur_cat_pos[0]][cur_cat_pos[1]]=0;
+        play_b_group[cur_cat_pos[0]][cur_cat_pos[1]]->setIcon(QIcon());
+        cur_cat_pos[0]=curx;
+        cur_cat_pos[1]=cury;
+        cgmap[cur_cat_pos[0]][cur_cat_pos[1]]=CAT;
+        play_b_group[cur_cat_pos[0]][cur_cat_pos[1]]->setIcon(QIcon(QPixmap(":/new/prefix2/cat.png")));
+        cur_move++;
+        for(int i=0;i<row;i++){
+            for(int j=0;j<col;j++){
+                play_b_group[i][j]->setEnabled(true);
+                if(cgmap[i][j]==-1){
+                    cgmap[i][j]=0;
+                    play_b_group[i][j]->setIcon(QIcon());
+                }
+            }
+        }
+    }
 
 }
 
