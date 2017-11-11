@@ -37,7 +37,6 @@ private:
   QPushButton *button_group[MAX_MAP_SIZE][MAX_MAP_SIZE];
   QPushButton *play_b_group[MAX_MAP_SIZE][MAX_MAP_SIZE];
 
-  void reset_game();
 
   // Game Set
   int row, col;
@@ -45,6 +44,7 @@ private:
   bool mouse_move, cat_rush;
 
   int cat_pos[2],mouse_pos[2];
+  int game_mode; // 0-normal 1-mousemove 2-catrush
 
   void gen_map(int row, int col);
   void rand_gen_cmap();
@@ -57,9 +57,10 @@ private:
   // Game Play
   int cgmap[MAX_MAP_SIZE][MAX_MAP_SIZE];
   int cur_cat_pos[2],cur_mouse_pos[2];
-  int cur_move=0;
+  int cur_move=0,req_move;
   QList<Node*> Path;
   void gen_play_map();
+  void reset_game();
 
   void shrink_out(QWidget *w);
   void shrink_in(QWidget *w);
@@ -71,6 +72,7 @@ private slots:
   void pick_icon_slot();
   void change_size_slot(int csize);
 
+  void check_slot();
   void play_slot();
   void solve_slot();
   void move_map_slot();

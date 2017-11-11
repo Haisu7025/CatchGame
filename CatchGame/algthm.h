@@ -18,6 +18,7 @@ class Node
     int getState();
     int getGH() { return g + h; }
     int getG() { return g; }
+    int getH() { return h; }
     int getX() { return x; }
     int getY() { return y; }
 
@@ -25,6 +26,18 @@ class Node
     int x, y;
     int g, h;
     int State;
+};
+
+class StateNode
+{
+public:
+    StateNode *father;
+    StateNode(int catx,int caty,int mousex,int mousey);
+    int bfc,bfm;
+    int catx, caty, mousex, mousey;
+    int level;
+
+    bool isLeaf();
 };
 
 class Algthm
@@ -35,19 +48,32 @@ class Algthm
     Node *getEle(int x, int y);
     void AStarSearch(Node *s, Node *e);
     void AStarUnitSearch(QList<Node *> *OpenLs, QList<Node *> *CloseLs, Node *n, Node *target);
-
     QList<Node*> get_path(){
         return *Path;
     }
+
+    void down_spread(StateNode *e);
+    void construct_tree_for_cat();
+    void construct_tree_for_mouse();
+
+    void VsSearch(Node *s, Node *e);
+
+
 
 
 
   private:
     Node *nmap[MAX_MAP_SIZE][MAX_MAP_SIZE];
-    QList<Node *> *Path;
     int rangex, rangey;
 
+    // A*
+    QList<Node *> *Path;
     int getMahattanDistance(int curx, int cury, int targetx, int targety);
+
+    // Vs
+    QList<StateNode*> *Tree;
+    int cur_level,new_level;
+
 };
 
 #endif // ALGTHM_H

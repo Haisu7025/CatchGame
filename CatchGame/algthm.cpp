@@ -28,6 +28,19 @@ int Node::getState()
     return State;
 }
 
+
+StateNode::StateNode(int catx, int caty, int mousex, int mousey){
+    this->catx=catx;
+    this->caty=caty;
+    this->mousex=mousex;
+    this->mousey=mousey;
+    bfc = bfm = 0;
+}
+
+bool StateNode::isLeaf(){
+    return (catx==mousex && caty==mousey);
+}
+
 Algthm::Algthm(int x, int y)
 {
     rangex = x;
@@ -153,4 +166,79 @@ void Algthm::AStarUnitSearch(QList<Node *> *OpenLs, QList<Node *> *ClosLs, Node 
             }
         }
     }
+}
+
+void Algthm::down_spread(StateNode *e){
+    int curx,cury;
+    switch (new_level) {
+    case CAT:
+        curx = e->catx;
+        cury = e->caty;
+        for (int i = curx - 1; i <= curx + 1; i++)
+        {
+            for (int j = cury - 1; j <= cury + 1; j++)
+            {
+                if (i == curx && j == cury)
+                {
+                    continue;
+                }
+                if (abs(i - curx) + abs(j - cury) == 2)
+                {
+                    continue;
+                }
+                if (i >= 0 && i < rangex && j >= 0 && j < rangey)
+                {
+                    StateNode *t = new StateNode(i,j,e->mousex,e->mousey);
+                    Tree->append(t);
+                    t->father = e;
+                    t->level = t->father->level+1;
+                    //inside range
+                    if(e->isLeaf()){
+                        // Reach Leaf Node
+                        e->bfc = 1;
+                        e->bfm = 1;
+                    }
+                    // backward
+                    StateNode *temp=t;
+                    while(true){
+                        switch (temp->level%3) {
+                        case 0:
+                        case 1:
+                            // MAX for cat, MIN for mouse
+                            if(temp->bfc>temp->father->bfc){
+                                temp->father->bfc = temp->bfc;
+                            }
+                            if(temp->bfm<temp->father->bfm){
+                                temp->father->bfm = temp->bfm;
+                            }
+                            break;
+                        case 2:
+                            // MIN for cat, MAX for mouse
+                            if(temp->bfc<temp->father->bfc){
+                                temp->father->bfc = temp->bfc;
+                            }
+                            if(temp->bfm>temp->father->bfm){
+                                temp->father->bfm = temp->bfm;
+                            }
+                            break;
+                        default:
+                            break;
+                        }
+                        temp = temp->father;
+                    }
+                }
+            }
+        }
+        break;
+    case MOUSE:
+        curx = e->mousex;
+        cury = e->mousey;
+        break;
+    default:
+        break;
+    }
+}
+
+void Algthm::VsSearch(Node *s, Node *e){
+    new_level=CAT;
 }

@@ -75,6 +75,9 @@ void Widget::start_slot()
     connect(ui->col_set,SIGNAL(valueChanged(int)),this,SLOT(change_size_slot(int)));
     connect(ui->row_set,SIGNAL(valueChanged(int)),this,SLOT(change_size_slot(int)));
 
+    connect(ui->mousemove,SIGNAL(clicked(bool)),this,SLOT(check_slot()));
+    connect(ui->catrush,SIGNAL(clicked(bool)),this,SLOT(check_slot()));
+
 }
 
 void Widget::reset_game(){
@@ -344,7 +347,21 @@ void Widget::rand_slot(){
     }
 }
 
+void Widget::check_slot(){
+    if(ui->mousemove->isChecked() && ui->catrush->isChecked()){
+        dynamic_cast<QCheckBox*>(QObject::sender())->setChecked(false);
+        QMessageBox::about(NULL,"ERROR","Can't Activate Both Mode");
+    }
+}
+
 void Widget::play_slot(){
+    if(ui->mousemove->isChecked()){
+        game_mode=1;
+    }
+    if(ui->catrush->isChecked()){
+        game_mode=2;
+    }
+    game_mode=0;
     ui->stackedWidget->setCurrentIndex(2);
     gen_play_map();
     for(int i=0;i<row;i++){
@@ -356,8 +373,9 @@ void Widget::play_slot(){
 
     al->AStarSearch(al->getEle(cat_pos[0],cat_pos[1]),al->getEle(mouse_pos[0],mouse_pos[1]));
     Path = al->get_path();
+    req_move = Path.length()+row*col/15;
     ui->req_move_l->setText("<html><head/><body><p align=\"center\"><span style=\" color:#fefefe;\">"+QString::number(Path.length()+row*col/15)+"</span></p></body></html>");
-    ui->req_move_l->setText(QString::number(cur_move));
+    ui->cur_move_l->setText("<html><head/><body><p align=\"center\"><span style=\" color:#fefefe;\">"+QString::number(0)+"</span></p></body></html>");
 
     cur_cat_pos[0]=cat_pos[0];
     cur_cat_pos[1]=cat_pos[1];
@@ -367,75 +385,167 @@ void Widget::play_slot(){
 }
 
 void Widget::solve_slot(){
-    if(cur_move!=0){
-        // Alredy move
-        QMessageBox::information(NULL, "ERROR", "Already Move Cat!", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-    }
-    else{
-        for(int i=0;i<Path.length();i++){
-            int m=cur_cat_pos[0],n=cur_cat_pos[1];
-            play_b_group[cur_cat_pos[0]][cur_cat_pos[1]]->setIcon(QIcon());
-            cur_cat_pos[0]=Path.at(i)->getX();
-            cur_cat_pos[1]=Path.at(i)->getY();
-            play_b_group[cur_cat_pos[0]][cur_cat_pos[1]]->setIcon(QIcon(QPixmap(":/new/prefix2/cat.png")));
-            QTime t;
-            t.start();
-            while(t.elapsed()<300)
-                QCoreApplication::processEvents();
+    switch (game_mode) {
+    case 0:
+        if(cur_move!=0){
+            // Alredy move
+            QMessageBox::information(NULL, "ERROR", "Already Move Cat!", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
         }
-        QMessageBox::information(NULL,"End","Problem Solved!",QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-        reset_game();
-        ui->stackedWidget->setCurrentIndex(0);
+        else{
+            for(int i=0;i<Path.length();i++){
+                int m=cur_cat_pos[0],n=cur_cat_pos[1];
+                play_b_group[cur_cat_pos[0]][cur_cat_pos[1]]->setIcon(QIcon());
+                cur_cat_pos[0]=Path.at(i)->getX();
+                cur_cat_pos[1]=Path.at(i)->getY();
+                play_b_group[cur_cat_pos[0]][cur_cat_pos[1]]->setIcon(QIcon(QPixmap(":/new/prefix2/cat.png")));
+                QTime t;
+                t.start();
+                while(t.elapsed()<300)
+                    QCoreApplication::processEvents();
+            }
+            QMessageBox::information(NULL,"End","Problem Solved!",QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+            reset_game();
+            ui->stackedWidget->setCurrentIndex(0);
+        }
+        break;
+
+    case 1:
+        break;
     }
 }
 
 void Widget::move_map_slot(){
     int p = QObject::sender()->objectName().toInt();
     int curx = p/100, cury = p%100;
-    if(cgmap[curx][cury]==CAT){
-        for(int i=0;i<row;i++){
-            for(int j=0;j<col;j++){
-                if(abs(i-curx)+abs(j-cury)==1 && cgmap[i][j]==FTG){
-                    if(i-curx==1){
-                        //up
-                        play_b_group[i][j]->setIcon(QIcon(QPixmap(":/new/prefix2/up.png")));
+    switch (game_mode) {
+    case 0:
+        if(cgmap[curx][cury]==CAT){
+            for(int i=0;i<row;i++){
+                for(int j=0;j<col;j++){
+                    if(abs(i-curx)+abs(j-cury)==1 && (cgmap[i][j]==FTG || cgmap[i][j]==MOUSE)){
+                        if(cgmap[i][j]==MOUSE){
+                            cgmap[i][j]=-2;
+                            continue;
+                        }
+                        if(i-curx==1){
+                            //up
+                            play_b_group[i][j]->setIcon(QIcon(QPixmap(":/new/prefix2/down.png")));
+                        }
+                        if(curx-i==1){
+                            //down
+                            play_b_group[i][j]->setIcon(QIcon(QPixmap(":/new/prefix2/up.png")));
+                        }
+                        if(j-cury==1){
+                            //right
+                            play_b_group[i][j]->setIcon(QIcon(QPixmap(":/new/prefix2/right.png")));
+                        }
+                        if(cury-j==1){
+                            //left
+                            play_b_group[i][j]->setIcon(QIcon(QPixmap(":/new/prefix2/left.png")));
+                        }
+                        cgmap[i][j]=-1;
+                        continue;
                     }
-                    if(curx-i==1){
-                        //down
-                        play_b_group[i][j]->setIcon(QIcon(QPixmap(":/new/prefix2/down.png")));
-                    }
-                    if(j-cury==1){
-                        //right
-                        play_b_group[i][j]->setIcon(QIcon(QPixmap(":/new/prefix2/right.png")));
-                    }
-                    if(cury-j==1){
-                        //left
-                        play_b_group[i][j]->setIcon(QIcon(QPixmap(":/new/prefix2/left.png"));
-                    }
-                    cgmap[i][j]=-1;
-                    continue;
-                }
-                play_b_group[i][j]->setEnabled(false);
-            }
-        }
-    }
-    else if(cgmap[curx][cury]==-1){
-        cgmap[cur_cat_pos[0]][cur_cat_pos[1]]=0;
-        play_b_group[cur_cat_pos[0]][cur_cat_pos[1]]->setIcon(QIcon());
-        cur_cat_pos[0]=curx;
-        cur_cat_pos[1]=cury;
-        cgmap[cur_cat_pos[0]][cur_cat_pos[1]]=CAT;
-        play_b_group[cur_cat_pos[0]][cur_cat_pos[1]]->setIcon(QIcon(QPixmap(":/new/prefix2/cat.png")));
-        cur_move++;
-        for(int i=0;i<row;i++){
-            for(int j=0;j<col;j++){
-                play_b_group[i][j]->setEnabled(true);
-                if(cgmap[i][j]==-1){
-                    cgmap[i][j]=0;
-                    play_b_group[i][j]->setIcon(QIcon());
+                    play_b_group[i][j]->setEnabled(false);
                 }
             }
         }
+        else if(cgmap[curx][cury]==-1){
+            cgmap[cur_cat_pos[0]][cur_cat_pos[1]]=0;
+            play_b_group[cur_cat_pos[0]][cur_cat_pos[1]]->setIcon(QIcon());
+            cur_cat_pos[0]=curx;
+            cur_cat_pos[1]=cury;
+            cgmap[cur_cat_pos[0]][cur_cat_pos[1]]=CAT;
+            play_b_group[cur_cat_pos[0]][cur_cat_pos[1]]->setIcon(QIcon(QPixmap(":/new/prefix2/cat.png")));
+            cur_move++;
+            ui->cur_move_l->setText("<html><head/><body><p align=\"center\"><span style=\" color:#fefefe;\">"+QString::number(cur_move)+"</span></p></body></html>");
+            if(cur_move>req_move){
+                QMessageBox::about(NULL,"Fail","You Fail!");
+                ui->stackedWidget->setCurrentIndex(ui->stackedWidget->currentIndex() - 2);
+            }
+            for(int i=0;i<row;i++){
+                for(int j=0;j<col;j++){
+                    play_b_group[i][j]->setEnabled(true);
+                    if(cgmap[i][j]==-1){
+                        cgmap[i][j]=0;
+                        play_b_group[i][j]->setIcon(QIcon());
+                    }
+                }
+            }
+        }
+        else if(cgmap[curx][cury]==-2){
+            QMessageBox::about(NULL,"Victory","You Win!\nRequired Move:"+QString::number(req_move)+"\nYour Move:"+QString::number(cur_move));
+            reset_game();
+            ui->stackedWidget->setCurrentIndex(ui->stackedWidget->currentIndex() - 2);
+        }
+        break;
+
+    case 1:
+        if(cgmap[curx][cury]==CAT){
+            for(int i=0;i<row;i++){
+                for(int j=0;j<col;j++){
+                    if(abs(i-curx)+abs(j-cury)==1 && (cgmap[i][j]==FTG || cgmap[i][j]==MOUSE)){
+                        if(cgmap[i][j]==MOUSE){
+                            cgmap[i][j]=-2;
+                        }
+                        if(i-curx==1){
+                            //up
+                            play_b_group[i][j]->setIcon(QIcon(QPixmap(":/new/prefix2/down.png")));
+                        }
+                        if(curx-i==1){
+                            //down
+                            play_b_group[i][j]->setIcon(QIcon(QPixmap(":/new/prefix2/up.png")));
+                        }
+                        if(j-cury==1){
+                            //right
+                            play_b_group[i][j]->setIcon(QIcon(QPixmap(":/new/prefix2/right.png")));
+                        }
+                        if(cury-j==1){
+                            //left
+                            play_b_group[i][j]->setIcon(QIcon(QPixmap(":/new/prefix2/left.png")));
+                        }
+                        cgmap[i][j]=-1;
+                        continue;
+                    }
+                    play_b_group[i][j]->setEnabled(false);
+                }
+            }
+        }
+        else if(cgmap[curx][cury]==-1){
+            cgmap[cur_cat_pos[0]][cur_cat_pos[1]]=0;
+            play_b_group[cur_cat_pos[0]][cur_cat_pos[1]]->setIcon(QIcon());
+            cur_cat_pos[0]=curx;
+            cur_cat_pos[1]=cury;
+            cgmap[cur_cat_pos[0]][cur_cat_pos[1]]=CAT;
+            play_b_group[cur_cat_pos[0]][cur_cat_pos[1]]->setIcon(QIcon(QPixmap(":/new/prefix2/cat.png")));
+            cur_move++;
+            ui->cur_move_l->setText("<html><head/><body><p align=\"center\"><span style=\" color:#fefefe;\">"+QString::number(cur_move)+"</span></p></body></html>");
+            if(cur_move>req_move){
+                QMessageBox::about(NULL,"Fail","You Fail!");
+                ui->stackedWidget->setCurrentIndex(ui->stackedWidget->currentIndex() - 2);
+            }
+            for(int i=0;i<row;i++){
+                for(int j=0;j<col;j++){
+                    play_b_group[i][j]->setEnabled(true);
+                    if(cgmap[i][j]==-1){
+                        cgmap[i][j]=0;
+                        play_b_group[i][j]->setIcon(QIcon());
+                    }
+                }
+            }
+
+            //Mouse Move
+            if(cur_move%2==0){
+
+            }
+        }
+        else if(cgmap[curx][cury]==-2){
+            QMessageBox::about(NULL,"Victory","You Win!\nRequired Move:"+QString::number(req_move)+"\nYour Move:"+QString::number(cur_move));
+            reset_game();
+            ui->stackedWidget->setCurrentIndex(ui->stackedWidget->currentIndex() - 2);
+        }
+        break;
+
     }
 
 }
@@ -446,6 +556,7 @@ void Widget::back_gp_slot(){
             play_b_group[i][j]->deleteLater();
         }
     }
+    reset_game();
     ui->stackedWidget->setCurrentIndex(ui->stackedWidget->currentIndex() - 2);
 }
 

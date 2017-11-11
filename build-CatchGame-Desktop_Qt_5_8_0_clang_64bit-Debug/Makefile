@@ -675,10 +675,14 @@ compiler_rcc_clean:
 qrc_res.cpp: ../CatchGame/res.qrc \
 		/Applications/QT5.8/5.8/clang_64/bin/rcc \
 		../CatchGame/point.png \
+		../CatchGame/up.png \
 		../CatchGame/cat.png \
 		../CatchGame/wall1.png \
+		../CatchGame/down.png \
 		../CatchGame/wall.png \
 		../CatchGame/mouse.png \
+		../CatchGame/right.png \
+		../CatchGame/left.png \
 		../CatchGame/timg.jpeg
 	/Applications/QT5.8/5.8/clang_64/bin/rcc -name res ../CatchGame/res.qrc -o qrc_res.cpp
 
