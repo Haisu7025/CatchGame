@@ -28,17 +28,19 @@ int Node::getState()
     return State;
 }
 
-
-StateNode::StateNode(int catx, int caty, int mousex, int mousey){
-    this->catx=catx;
-    this->caty=caty;
-    this->mousex=mousex;
-    this->mousey=mousey;
+StateNode::StateNode(int catx, int caty, int mousex, int mousey)
+{
+    this->catx = catx;
+    this->caty = caty;
+    this->mousex = mousex;
+    this->mousey = mousey;
     bfc = bfm = 0;
+    level = 0;
 }
 
-bool StateNode::isLeaf(){
-    return (catx==mousex && caty==mousey);
+bool StateNode::isLeaf()
+{
+    return (catx == mousex && caty == mousey);
 }
 
 Algthm::Algthm(int x, int y)
@@ -154,11 +156,13 @@ void Algthm::AStarUnitSearch(QList<Node *> *OpenLs, QList<Node *> *ClosLs, Node 
                             nmap[i][j]->father = n;
                             OpenLs->replace(t, nmap[i][j]);
                         }
-                        else{
+                        else
+                        {
                             continue;
                         }
                     }
-                    else{
+                    else
+                    {
                         OpenLs->append(nmap[i][j]);
                         nmap[i][j]->father = n;
                     }
@@ -168,77 +172,150 @@ void Algthm::AStarUnitSearch(QList<Node *> *OpenLs, QList<Node *> *ClosLs, Node 
     }
 }
 
-void Algthm::down_spread(StateNode *e){
-    int curx,cury;
-    switch (new_level) {
-    case CAT:
+void Algthm::down_spread(StateNode *e)
+{
+    int curx, cury;
+    if(e->level%3==0 || e->level%3==2){
+        // cat's turn to move
         curx = e->catx;
         cury = e->caty;
-        for (int i = curx - 1; i <= curx + 1; i++)
+    }
+    else{
+        // mouse's turn to move
+        curx = e->mousex;
+        cury = e->mousey;
+    }
+
+    for (int i = curx - 1; i <= curx + 1; i++)
+    {
+        for (int j = cury - 1; j <= cury + 1; j++)
         {
-            for (int j = cury - 1; j <= cury + 1; j++)
+            if (i == curx && j == cury)
             {
-                if (i == curx && j == cury)
-                {
+                continue;
+            }
+            if (abs(i - curx) + abs(j - cury) == 2)
+            {
+                continue;
+            }
+            if (i >= 0 && i < rangex && j >= 0 && j < rangey)
+            {
+                if (nmap[i][j]->getState()==BLOCK){
                     continue;
                 }
-                if (abs(i - curx) + abs(j - cury) == 2)
-                {
+                StateNode *t;
+                if(e->level%3==0 || e->level%3==2){
+                    // cat's turn to move
+                    t = new StateNode(i, j, e->mousex, e->mousey);
+                }
+                else{
+                    // mouse's turn to move
+                    t = new StateNode(e->catx,e->caty,i,j);
+                }
+                t->father = e;
+                t->level = t->father->level + 1;
+                QMap<int,StateNode *>::iterator it = Tree->find(t->get_key());
+                if(it!=Tree->end()){
+                    // already exists in Tree
                     continue;
                 }
-                if (i >= 0 && i < rangex && j >= 0 && j < rangey)
+                Tree->insert(t->get_key(),t);
+                //inside range
+                if (e->isLeaf())
                 {
-                    StateNode *t = new StateNode(i,j,e->mousex,e->mousey);
-                    Tree->append(t);
-                    t->father = e;
-                    t->level = t->father->level+1;
-                    //inside range
-                    if(e->isLeaf()){
-                        // Reach Leaf Node
-                        e->bfc = 1;
-                        e->bfm = 1;
-                    }
+                    // Reach Leaf Node
+                    e->bfc = e->level;
+                    e->bfm = e->level;
                     // backward
-                    StateNode *temp=t;
-                    while(true){
-                        switch (temp->level%3) {
+                    StateNode *temp = t;
+                    int back_c_flag, back_h_flag;
+                    while (true)
+                    {
+                        back_c_flag = 0;
+                        back_h_flag = 0;
+                        switch (temp->level % 3)
+                        {
                         case 0:
                         case 1:
                             // MAX for cat, MIN for mouse
-                            if(temp->bfc>temp->father->bfc){
+                            if (temp->bfc > temp->father->bfc)
+                            {
                                 temp->father->bfc = temp->bfc;
                             }
-                            if(temp->bfm<temp->father->bfm){
+                            else
+                            {
+                                back_c_flag = 1;
+                            }
+                            if (temp->bfm < temp->father->bfm)
+                            {
                                 temp->father->bfm = temp->bfm;
+                            }
+                            else
+                            {
+                                back_h_flag = 1;
                             }
                             break;
                         case 2:
                             // MIN for cat, MAX for mouse
-                            if(temp->bfc<temp->father->bfc){
+                            if (temp->bfc < temp->father->bfc)
+                            {
                                 temp->father->bfc = temp->bfc;
                             }
-                            if(temp->bfm>temp->father->bfm){
+                            else
+                            {
+                                back_c_flag = 1;
+                            }
+                            if (temp->bfm > temp->father->bfm)
+                            {
                                 temp->father->bfm = temp->bfm;
+                            }
+                            else
+                            {
+                                back_h_flag = 1;
                             }
                             break;
                         default:
                             break;
                         }
+                        if (back_c_flag && back_h_flag)
+                        {
+                            // dont change any more
+                            break;
+                        }
                         temp = temp->father;
                     }
                 }
+                else{
+                    down_spread(t);
+                }
             }
         }
-        break;
-    case MOUSE:
-        curx = e->mousex;
-        cury = e->mousey;
-        break;
-    default:
-        break;
     }
 }
 
-void Algthm::VsSearch(Node *s, Node *e){
-    new_level=CAT;
+void Algthm::VsSearch(int a[], int b[])
+{
+    Tree = new QMap<int,StateNode*>();
+    StateNode *root = new StateNode(a[0],a[1],b[0],b[1]);
+    down_spread(root);
+}
+
+void Algthm::get_next_move_for_mouse(int catpos[], int mousepos[], int *tar){
+    int key = 20000+(catpos[0]*20+catpos[1])*20+mousepos[0]*20+mousepos[1];
+    QMap<int,StateNode *>::iterator it = Tree->find(key);
+    QMap<int,StateNode *>::iterator i;
+    int MAX = -1;
+    StateNode *target=NULL;
+    for(i=Tree->begin();i!=Tree->end();i++){
+        // mouse want to escape as long as possible
+        if(i.value()->father->get_key()==it.value()->get_key()){
+            // i is current child
+            if(i.value()->bfm>=MAX){
+                target = i.value();
+                MAX=i.value()->bfm;
+            }
+        }
+    }
+    tar[0]=target->mousex;
+    tar[1]=target->mousey;
 }

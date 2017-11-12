@@ -36,6 +36,9 @@ public:
     int bfc,bfm;
     int catx, caty, mousex, mousey;
     int level;
+    int get_key(){
+        return (level%3)*10000+(catx*20+caty)*20+mousex*20+mousey;
+    }
 
     bool isLeaf();
 };
@@ -56,8 +59,8 @@ class Algthm
     void construct_tree_for_cat();
     void construct_tree_for_mouse();
 
-    void VsSearch(Node *s, Node *e);
-
+    void VsSearch(int a[], int b[]);
+    void get_next_move_for_mouse(int catpos[],int mousepos[], int *tar);
 
 
 
@@ -71,8 +74,7 @@ class Algthm
     int getMahattanDistance(int curx, int cury, int targetx, int targety);
 
     // Vs
-    QList<StateNode*> *Tree;
-    int cur_level,new_level;
+    QMap<int,StateNode *> *Tree;
 
 };
 

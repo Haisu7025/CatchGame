@@ -55,12 +55,16 @@ private:
   void set_blank(int m, int n);
 
   // Game Play
+  Algthm *al;
   int cgmap[MAX_MAP_SIZE][MAX_MAP_SIZE];
   int cur_cat_pos[2],cur_mouse_pos[2];
   int cur_move=0,req_move;
   QList<Node*> Path;
   void gen_play_map();
   void reset_game();
+
+  void cat_move(int curx, int cury);
+  void mous_move(int curx, int cury);
 
   void shrink_out(QWidget *w);
   void shrink_in(QWidget *w);
