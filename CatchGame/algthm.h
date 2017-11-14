@@ -36,10 +36,11 @@ public:
     int bfc,bfm;
     int catx, caty, mousex, mousey;
     int level;
-    int get_key(){
-        return (level%3)*10000+(catx*20+caty)*20+mousex*20+mousey;
+    int poskey(){
+        return (catx*20+caty)*20+mousex*20+mousey;
     }
 
+    bool isEqual(StateNode *tar);
     bool isLeaf();
 };
 
@@ -74,7 +75,7 @@ class Algthm
     int getMahattanDistance(int curx, int cury, int targetx, int targety);
 
     // Vs
-    QMap<int,StateNode *> *Tree;
+    QList<StateNode *> *Tree;
 
 };
 

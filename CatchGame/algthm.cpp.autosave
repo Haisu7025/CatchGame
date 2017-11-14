@@ -38,6 +38,12 @@ StateNode::StateNode(int catx, int caty, int mousex, int mousey)
     level = 0;
 }
 
+bool StateNode::isEqual(StateNode *tar){
+    if(tar->poskey() == this->poskey() && tar->father == this->father){
+        
+    }
+}
+
 bool StateNode::isLeaf()
 {
     return (catx == mousex && caty == mousey);
@@ -214,10 +220,9 @@ void Algthm::down_spread(StateNode *e)
                 }
                 t->father = e;
                 t->level = t->father->level + 1;
-                QMap<int,StateNode *>::iterator it = Tree->find(t->get_key());
-                if(it!=Tree->end()){
-                    // already exists in Tree
-                    continue;
+                
+                for(int i=0;i<Tree->length();i++){
+                    
                 }
                 Tree->insert(t->get_key(),t);
                 //inside range
