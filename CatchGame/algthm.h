@@ -28,20 +28,26 @@ class Node
     int State;
 };
 
-class StateNode
-{
-public:
-    StateNode *father;
-    StateNode(int catx,int caty,int mousex,int mousey);
-    int bfc,bfm;
-    int catx, caty, mousex, mousey;
-    int level;
-    int poskey(){
-        return (catx*20+caty)*20+mousex*20+mousey;
-    }
 
-    bool isEqual(StateNode *tar);
-    bool isLeaf();
+
+class AdState{
+public:
+    AdState* father;
+    int cat_pos,mouse_pos,level;
+    int benefit;
+    AdState(int cat_pos, int mouse_pos, int level){
+        father = NULL;
+        this->cat_pos = cat_pos;
+        this->mouse_pos = mouse_pos;
+        this->level = level;
+        benefit = 0;
+    }
+    bool isequal(AdState *s){
+        return s->cat_pos==cat_pos && s->mouse_pos==mouse_pos;
+    }
+    bool isleaf(){
+        return cat_pos == mouse_pos;
+    }
 };
 
 class Algthm
@@ -50,33 +56,24 @@ class Algthm
     Algthm(int x, int y);
     Algthm(int x, int y, int array[MAX_MAP_SIZE][MAX_MAP_SIZE]);
     Node *getEle(int x, int y);
-    void AStarSearch(Node *s, Node *e);
-    void AStarUnitSearch(QList<Node *> *OpenLs, QList<Node *> *CloseLs, Node *n, Node *target);
-    QList<Node*> get_path(){
-        return *Path;
-    }
 
-    void down_spread(StateNode *e);
-    void construct_tree_for_cat();
-    void construct_tree_for_mouse();
-
-    void VsSearch(int a[], int b[]);
-    void get_next_move_for_mouse(int catpos[],int mousepos[], int *tar);
-
-
-
-
-  private:
     Node *nmap[MAX_MAP_SIZE][MAX_MAP_SIZE];
     int rangex, rangey;
 
     // A*
     QList<Node *> *Path;
     int getMahattanDistance(int curx, int cury, int targetx, int targety);
+    void AStarSearch(Node *s, Node *e);
+    void AStarUnitSearch(QList<Node *> *OpenLs, QList<Node *> *CloseLs, Node *n, Node *target);
+    QList<Node*> get_path(){
+        return *Path;
+    }
 
-    // Vs
-    QList<StateNode *> *Tree;
-
+    // Adversarial Search
+    QList<AdState*> *Tree;
+    void AdvSearch(int cat_pos_start, int mouse_pos_start);
+    void spread(AdState *cur);
+    void get_next_move(int* cat_pos, int* mouse_pos, int *nm);
 };
 
 #endif // ALGTHM_H

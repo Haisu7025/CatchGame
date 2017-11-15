@@ -28,21 +28,6 @@ int Node::getState()
     return State;
 }
 
-StateNode::StateNode(int catx, int caty, int mousex, int mousey)
-{
-    this->catx = catx;
-    this->caty = caty;
-    this->mousex = mousex;
-    this->mousey = mousey;
-    bfc = bfm = 0;
-    level = 0;
-}
-
-bool StateNode::isLeaf()
-{
-    return (catx == mousex && caty == mousey);
-}
-
 Algthm::Algthm(int x, int y)
 {
     rangex = x;
@@ -172,143 +157,151 @@ void Algthm::AStarUnitSearch(QList<Node *> *OpenLs, QList<Node *> *ClosLs, Node 
     }
 }
 
-void Algthm::down_spread(StateNode *e)
-{
-    int curx, cury;
-    if(e->level%3==0 || e->level%3==1){
-        // cat's turn to move
-        curx = e->catx;
-        cury = e->caty;
-    }
-    else{
-        // mouse's turn to move
-        curx = e->mousex;
-        cury = e->mousey;
-    }
 
-    for (int i = curx - 1; i <= curx + 1; i++)
-    {
-        for (int j = cury - 1; j <= cury + 1; j++)
-        {
-            if (i == curx && j == cury)
-            {
-                continue;
-            }
-            if (abs(i - curx) + abs(j - cury) == 2)
-            {
-                continue;
-            }
-            if (i >= 0 && i < rangex && j >= 0 && j < rangey)
-            {
-                if (nmap[i][j]->getState()==BLOCK){
-                    continue;
-                }
-                StateNode *t;
-                if(e->level%3==0 || e->level%3==1){
-                    // cat's turn to move
-                    t = new StateNode(i, j, e->mousex, e->mousey);
-                }
-                else{
-                    // mouse's turn to move
-                    t = new StateNode(e->catx,e->caty,i,j);
-                }
-                t->father = e;
-                t->level = t->father->level + 1;
-                QMap<int,StateNode *>::iterator it = Tree->find(t->get_key());
-                if(it!=Tree->end()){
-                    // already exists in Tree
-                    continue;
-                }
-                Tree->insert(t->get_key(),t);
-                //inside range
-                if (e->isLeaf())
-                {
-                    // Reach Leaf Node
-//                    e->bfc = e->level;
-                    e->bfm = e->level;
-                    // backward
-                    StateNode *temp = t;
-                    int back_c_flag, back_h_flag;
-                    while (true)
-                    {
-                        if(temp->father==NULL){
-                            break;
-                        }
-                        switch (temp->level % 3)
-                        {
-                        case 0:
-                        case 1:
-                            // MAX for cat, MIN for mouse
-//                            if (temp->bfc > temp->father->bfc)
-//                            {
-//                                temp->father->bfc = temp->bfc;
-//                            }
-//                            else
-//                            {
-//                                back_c_flag = 1;
-//                            }
-                            if (temp->bfm < temp->father->bfm)
-                            {
-                                temp->father->bfm = temp->bfm;
-                            }
-                            else
-                            {
+void Algthm::AdvSearch(int cat_pos_start, int mouse_pos_start){
+    Tree = new QList<AdState*>();
+    AdState *s = new AdState(cat_pos_start, mouse_pos_start, 0);
+    spread(s);
+}
+
+void Algthm::spread(AdState *cur){
+    int cpsx = cur->cat_pos/20, cpsy = cur->cat_pos%20;
+    int mpsx = cur->mouse_pos/20, mpsy = cur->mouse_pos%20;
+    Tree->append(cur);
+    if(cur->level%2 == 0){
+        // cat move 2 units
+        for(int i=0;i<rangex;i++){
+            for(int j=0;j<rangey;j++){
+                if(abs(i-cpsx)+abs(j-cpsy)==2 && nmap[i][j]->getState()!=BLOCK){
+                    // moving target point
+                    int exi_flag=0;
+                    for(int p=0;p<Tree->length();p++){
+                        if(Tree->at(p)->cat_pos==20*i+j && Tree->at(p)->mouse_pos==cur->mouse_pos){
+                            if(Tree->at(p)->father==NULL){
+                                exi_flag = 1;
                                 break;
                             }
-                            break;
-                        case 2:
-                            // MIN for cat, MAX for mouse
-//                            if (temp->bfc < temp->father->bfc)
-//                            {
-//                                temp->father->bfc = temp->bfc;
-//                            }
-//                            else
-//                            {
-//                                back_c_flag = 1;
-//                            }
-                            if (temp->bfm > temp->father->bfm)
-                            {
-                                temp->father->bfm = temp->bfm;
-                            }
-                            else
-                            {
+                            if(Tree->at(p)->father->isequal(cur)){
+                                exi_flag = 1;
                                 break;
                             }
-                            break;
-                        default:
-                            break;
                         }
-                        temp = temp->father;
+                    }
+                    if(exi_flag){
+                        continue;
+                    }
+                    AdState *s = new AdState(i*20+j,cur->mouse_pos,cur->level+1);
+                    s->father = cur;
+                    if(s->isleaf()){
+                        s->benefit = s->level; // benefit is the round num
+                        int be = s->benefit;
+                        AdState *tmp=s;
+                        while(1){
+                            if(tmp->father==NULL){
+                                break;
+                            }
+                            tmp = tmp->father;
+                            if(tmp->level%2){
+                                // Mouse to move - MAX level
+                                if(tmp->benefit==0 || be>tmp->benefit){
+                                    tmp->benefit = be;
+                                }
+                                else{
+                                    break;
+                                }
+                            }
+                            else{
+                                // Cat to move - MIN level
+                                if(tmp->benefit==0 || be<tmp->benefit){
+                                    tmp->benefit = be;
+                                }
+                                else{
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    else{
+                        spread(s);
                     }
                 }
-                else{
-                    down_spread(t);
+            }
+        }
+    }
+    else{
+        // mouse move 1 unit
+        for(int i=0;i<rangex;i++){
+            for(int j=0;j<rangey;j++){
+                if(abs(i-mpsx)+abs(j-mpsy)==1 && nmap[i][j]->getState()!=BLOCK){
+                    // moving target point
+                    int exi_flag=0;
+                    for(int p=0;p<Tree->length();p++){
+                        if(Tree->at(p)->cat_pos==cur->cat_pos && Tree->at(p)->mouse_pos==i*20+j){
+                            if(Tree->at(p)->father==NULL){
+                                exi_flag = 1;
+                                continue;
+                            }
+                            if(Tree->at(p)->father->isequal(cur)){
+                                exi_flag = 1;
+                                break;
+                            }
+                        }
+                    }
+                    if(exi_flag){
+                        continue;
+                    }
+                    AdState *s = new AdState(cur->cat_pos,i*20+j,cur->level+1);
+                    s->father = cur;
+                    if(s->isleaf()){
+                        s->benefit = s->level; // benefit is the round num
+                        int be = s->benefit;
+                        AdState *tmp=s;
+                        while(1){
+                            if(tmp->father==NULL){
+                                break;
+                            }
+                            tmp = tmp->father;
+                            if(tmp->level%2){
+                                // Mouse to move - MAX level
+                                if(tmp->benefit==0 || be>tmp->benefit){
+                                    tmp->benefit = be;
+                                }
+                                else{
+                                    break;
+                                }
+                            }
+                            else{
+                                // Cat to move - MIN level
+                                if(tmp->benefit==0 || be<tmp->benefit){
+                                    tmp->benefit = be;
+                                }
+                                else{
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    else{
+                        spread(s);
+                    }
                 }
             }
         }
     }
 }
 
-void Algthm::VsSearch(int a[], int b[])
-{
-    Tree = new QList<Node*>();
-    StateNode *root = new StateNode(a[0],a[1],b[0],b[1]);
-    down_spread(root);
-}
-
-void Algthm::get_next_move_for_mouse(int catpos[], int mousepos[], int *tar){
+void Algthm::get_next_move(int *cat_pos, int *mouse_pos, int *nm){
+    AdState *tmp = new AdState(cat_pos[0]*20+cat_pos[1], mouse_pos[0]*20+mouse_pos[1], 0);
+    AdState *t=NULL;
     int MAX = -1;
-    StateNode *target=NULL;
-    for(i=Tree->begin();i!=Tree->end();i++){
-        // mouse want to escape as long as possible
-        if(i.value()->father->get_key()==it.value()->get_key()){
-            // i is current child
-            if(i.value()->bfm>=MAX){
-                target = i.value();
-                MAX=i.value()->bfm;
+    for(int i=0;i<Tree->length();i++){
+        if(Tree->at(i)->father!=NULL && Tree->at(i)->father->isequal(tmp) && Tree->at(i)->father->level%2==1){
+            if(Tree->at(i)->benefit>MAX){
+                MAX = Tree->at(i)->benefit;
+                t = Tree->at(i);
             }
         }
     }
-    tar[0]=target->mousex;
-    tar[1]=target->mousey;
+    nm[0] = t->mouse_pos/20;
+    nm[1] = t->mouse_pos%20;
 }

@@ -47,6 +47,13 @@ void Widget::bind_slots()
     connect(ui->solve_b,SIGNAL(clicked(bool)),this,SLOT(solve_slot()));
     connect(ui->back_b_gp,SIGNAL(clicked(bool)),this,SLOT(back_gp_slot()));
 
+    connect(ui->cat_b,SIGNAL(clicked(bool)),this,SLOT(pick_icon_slot()));
+    connect(ui->mouse_b,SIGNAL(clicked(bool)),this,SLOT(pick_icon_slot()));
+    connect(ui->wall_b,SIGNAL(clicked(bool)),this,SLOT(pick_icon_slot()));
+
+    connect(ui->col_set,SIGNAL(valueChanged(int)),this,SLOT(change_size_slot(int)));
+    connect(ui->row_set,SIGNAL(valueChanged(int)),this,SLOT(change_size_slot(int)));
+
 }
 
 void Widget::create_move_animation(QAbstractButton *obj, QPoint target)
@@ -68,12 +75,7 @@ void Widget::start_slot()
     ui->stackedWidget->setCurrentIndex(1);
     gen_map(5,5);
 
-    connect(ui->cat_b,SIGNAL(clicked(bool)),this,SLOT(pick_icon_slot()));
-    connect(ui->mouse_b,SIGNAL(clicked(bool)),this,SLOT(pick_icon_slot()));
-    connect(ui->wall_b,SIGNAL(clicked(bool)),this,SLOT(pick_icon_slot()));
 
-    connect(ui->col_set,SIGNAL(valueChanged(int)),this,SLOT(change_size_slot(int)));
-    connect(ui->row_set,SIGNAL(valueChanged(int)),this,SLOT(change_size_slot(int)));
 
     connect(ui->mousemove,SIGNAL(clicked(bool)),this,SLOT(check_slot()));
     connect(ui->catrush,SIGNAL(clicked(bool)),this,SLOT(check_slot()));
@@ -378,7 +380,7 @@ void Widget::play_slot(){
         ui->cur_move_l->setText("<html><head/><body><p align=\"center\"><span style=\" color:#fefefe;\">"+QString::number(0)+"</span></p></body></html>");
         break;
     case 1:
-        al->VsSearch(cat_pos,mouse_pos);
+        al->AdvSearch(cat_pos[0]*20+cat_pos[1],mouse_pos[0]*20+mouse_pos[1]);
     case 2:
         break;
     }
@@ -544,7 +546,7 @@ void Widget::move_map_slot(){
             //Mouse Move
             if(cur_move%2==0){
                 int target[2];
-                al->get_next_move_for_mouse(cur_cat_pos,cur_mouse_pos,target);
+                al->get_next_move(cur_cat_pos,cur_mouse_pos,target);
                 mous_move(target[0],target[1]);
 
             }
