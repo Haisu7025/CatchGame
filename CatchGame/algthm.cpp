@@ -305,3 +305,4 @@ void Algthm::get_next_move(int *cat_pos, int *mouse_pos, int *nm){
     nm[0] = t->mouse_pos/20;
     nm[1] = t->mouse_pos%20;
 }
+

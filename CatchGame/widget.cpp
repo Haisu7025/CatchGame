@@ -78,7 +78,6 @@ void Widget::start_slot()
 
 
     connect(ui->mousemove,SIGNAL(clicked(bool)),this,SLOT(check_slot()));
-    connect(ui->catrush,SIGNAL(clicked(bool)),this,SLOT(check_slot()));
 
 }
 
@@ -101,7 +100,6 @@ void Widget::reset_game(){
     ui->col_set->setValue(5);
 
     ui->mousemove->setChecked(false);
-    ui->catrush->setChecked(false);
 }
 
 void Widget::gen_map(int row, int col)
@@ -349,7 +347,7 @@ void Widget::rand_slot(){
 }
 
 void Widget::check_slot(){
-    if(ui->mousemove->isChecked() && ui->catrush->isChecked()){
+    if(ui->mousemove->isChecked()){
         dynamic_cast<QCheckBox*>(QObject::sender())->setChecked(false);
         QMessageBox::about(NULL,"ERROR","Can't Activate Both Mode");
     }
@@ -359,9 +357,6 @@ void Widget::play_slot(){
     game_mode=0;
     if(ui->mousemove->isChecked()){
         game_mode=1;
-    }
-    if(ui->catrush->isChecked()){
-        game_mode=2;
     }
     ui->stackedWidget->setCurrentIndex(2);
     gen_play_map();
@@ -381,7 +376,7 @@ void Widget::play_slot(){
         break;
     case 1:
         al->AdvSearch(cat_pos[0]*20+cat_pos[1],mouse_pos[0]*20+mouse_pos[1]);
-    case 2:
+    default:
         break;
     }
     cur_cat_pos[0]=cat_pos[0];
@@ -409,13 +404,14 @@ void Widget::solve_slot(){
                 while(t.elapsed()<300)
                     QCoreApplication::processEvents();
             }
-            QMessageBox::information(NULL,"End","Problem Solved!",QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+            QMessageBox::about(NULL,"End","Problem Solved!");
             reset_game();
             ui->stackedWidget->setCurrentIndex(0);
         }
         break;
 
     case 1:
+        QMessageBox::about(NULL,"Error","This mode doesn't support solve");
         break;
     }
 }
