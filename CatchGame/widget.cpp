@@ -51,9 +51,6 @@ void Widget::bind_slots()
     connect(ui->mouse_b,SIGNAL(clicked(bool)),this,SLOT(pick_icon_slot()));
     connect(ui->wall_b,SIGNAL(clicked(bool)),this,SLOT(pick_icon_slot()));
 
-    connect(ui->col_set,SIGNAL(valueChanged(int)),this,SLOT(change_size_slot(int)));
-    connect(ui->row_set,SIGNAL(valueChanged(int)),this,SLOT(change_size_slot(int)));
-
 }
 
 void Widget::create_move_animation(QAbstractButton *obj, QPoint target)
@@ -75,8 +72,8 @@ void Widget::start_slot()
     ui->stackedWidget->setCurrentIndex(1);
     gen_map(5,5);
 
-
-
+    connect(ui->col_set,SIGNAL(valueChanged(int)),this,SLOT(change_size_slot(int)));
+    connect(ui->row_set,SIGNAL(valueChanged(int)),this,SLOT(change_size_slot(int)));
     connect(ui->mousemove,SIGNAL(clicked(bool)),this,SLOT(check_slot()));
 
 }
@@ -347,10 +344,6 @@ void Widget::rand_slot(){
 }
 
 void Widget::check_slot(){
-    if(ui->mousemove->isChecked()){
-        dynamic_cast<QCheckBox*>(QObject::sender())->setChecked(false);
-        QMessageBox::about(NULL,"ERROR","Can't Activate Both Mode");
-    }
 }
 
 void Widget::play_slot(){
@@ -431,7 +424,7 @@ void Widget::mous_move(int curx, int cury){
     play_b_group[cur_mouse_pos[0]][cur_mouse_pos[1]]->setIcon(QIcon());
     cur_mouse_pos[0]=curx;
     cur_mouse_pos[1]=cury;
-    cgmap[cur_mouse_pos[0]][cur_mouse_pos[1]]=CAT;
+    cgmap[cur_mouse_pos[0]][cur_mouse_pos[1]]=MOUSE;
     play_b_group[cur_mouse_pos[0]][cur_mouse_pos[1]]->setIcon(QIcon(QPixmap(":/new/prefix2/mouse.png")));
 }
 
@@ -502,6 +495,7 @@ void Widget::move_map_slot(){
                     if(abs(i-curx)+abs(j-cury)==1 && (cgmap[i][j]==FTG || cgmap[i][j]==MOUSE)){
                         if(cgmap[i][j]==MOUSE){
                             cgmap[i][j]=-2;
+                            continue;
                         }
                         if(i-curx==1){
                             //up

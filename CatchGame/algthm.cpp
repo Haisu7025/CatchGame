@@ -192,7 +192,7 @@ void Algthm::spread(AdState *cur){
                     }
                     AdState *s = new AdState(i*20+j,cur->mouse_pos,cur->level+1);
                     s->father = cur;
-                    if(s->isleaf()){
+                    if(s!=NULL && s->isleaf()){
                         s->benefit = s->level; // benefit is the round num
                         int be = s->benefit;
                         AdState *tmp=s;
@@ -221,7 +221,7 @@ void Algthm::spread(AdState *cur){
                             }
                         }
                     }
-                    else{
+                    else if(s!=NULL){
                         spread(s);
                     }
                 }
@@ -234,25 +234,35 @@ void Algthm::spread(AdState *cur){
             for(int j=0;j<rangey;j++){
                 if(abs(i-mpsx)+abs(j-mpsy)==1 && nmap[i][j]->getState()!=BLOCK){
                     // moving target point
-                    int exi_flag=0;
+                    int exi_flag=0,exi_index=0;
+                    AdState *s = NULL;
                     for(int p=0;p<Tree->length();p++){
                         if(Tree->at(p)->cat_pos==cur->cat_pos && Tree->at(p)->mouse_pos==i*20+j){
                             if(Tree->at(p)->father==NULL){
                                 exi_flag = 1;
+                                exi_index = p;
                                 continue;
                             }
                             if(Tree->at(p)->father->isequal(cur)){
                                 exi_flag = 1;
+                                exi_index = p;
                                 break;
                             }
                         }
                     }
                     if(exi_flag){
-                        continue;
+                        if(Tree->at(exi_index)->level>cur->level+1){
+                            // this Node can be reached in a shorter way
+                            s = new AdState(cur->cat_pos,i*20+j,cur->level+1);
+                            Tree->replace(exi_index,s);
+                            Tree->at(exi_index)->father = cur;
+                        }
                     }
-                    AdState *s = new AdState(cur->cat_pos,i*20+j,cur->level+1);
-                    s->father = cur;
-                    if(s->isleaf()){
+                    else{
+                        s = new AdState(cur->cat_pos,i*20+j,cur->level+1);
+                        s->father = cur;
+                    }
+                    if(s!=NULL && s->isleaf()){
                         s->benefit = s->level; // benefit is the round num
                         int be = s->benefit;
                         AdState *tmp=s;
@@ -281,7 +291,7 @@ void Algthm::spread(AdState *cur){
                             }
                         }
                     }
-                    else{
+                    else if(s!=NULL){
                         spread(s);
                     }
                 }
